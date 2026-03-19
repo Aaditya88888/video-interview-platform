@@ -5,6 +5,7 @@ dns.setServers(["8.8.8.8"]);
 import express from "express";
 import { ENV } from "./lib/env.js";
 import path from "path";
+import cors from "cors";
 import { serve } from "inngest/express";
 import { connectDB } from "./lib/db.js";
 import { functions, inngest } from "./lib/inngest.js";
