@@ -5,11 +5,20 @@ dns.setServers(["8.8.8.8"]);
 import express from "express";
 import { ENV } from "./lib/env.js";
 import path from "path";
+import { serve } from "inngest/express";
 import { connectDB } from "./lib/db.js";
+import { functions, inngest } from "./lib/inngest.js";
 
 const app = express();
 
 const __dirname = path.resolve();
+
+// middleware
+app.use(express.json());
+// credentials: true meaning?? allows the browser to send cookies, authentication headers, or TLS client certificates along with the request.
+app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
+
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 app.get("/", (req, res) => {
   res.status(200).json({ msg: "Hello from the server side" });
