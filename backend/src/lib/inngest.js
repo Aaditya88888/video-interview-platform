@@ -30,6 +30,8 @@ const syncUser = inngest.createFunction(
       name: newUser.name,
       image: newUser.profileImage,
     });
+
+    // send a welcome email to the user
   },
 );
 
