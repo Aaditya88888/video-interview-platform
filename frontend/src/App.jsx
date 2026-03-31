@@ -9,18 +9,30 @@ import {
 } from "@clerk/react";
 import { Navigate, Route, Routes } from "react-router";
 import HomePage from "./pages/HomePage.jsx";
+import DashboardPage from "./pages/DashboardPage.jsx";
 import ProblemsPage from "./pages/ProblemsPage.jsx";
 import { Toaster } from "react-hot-toast";
 
 function App() {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
+
+  // this will get rid of the flickering effect
+  if (!isLoaded) return null;
+
   return (
     <>
       {/* <h1 className="text-red-500 bg-amber-500 p-10 text-3xl">
         Welcome to the app
       </h1> */}
       <Routes>
-        <Route path="/" element={<HomePage />}></Route>
+        <Route
+          path="/"
+          element={!isSignedIn ? <HomePage /> : <Navigate to={"/dashboard"} />}
+        ></Route>
+        <Route
+          path="/dashboard"
+          element={isSignedIn ? <DashboardPage /> : <Navigate to={"/"} />}
+        ></Route>
         <Route
           path="/problems"
           element={isSignedIn ? <ProblemsPage /> : <Navigate to={"/"} />}
