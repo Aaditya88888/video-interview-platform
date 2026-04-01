@@ -32,7 +32,7 @@ export async function createSession(req, res) {
       },
     });
 
-    chatClient.channel("messaging", callId, {
+    const channel = chatClient.channel("messaging", callId, {
       name: `${problem} Session`,
       created_by_id: clerkId,
       members: [clerkId],
@@ -86,7 +86,7 @@ export async function getSessionById(req, res) {
 
     const session = await Session.findById(id)
       .populate("host", "name email profileImage clerkId")
-      .populate("paritcipant", "name email profileImage clerkId");
+      .populate("participant", "name email profileImage clerkId");
 
     if (!session) {
       return res.status(404).json({ message: "Session not found" });
@@ -112,7 +112,7 @@ export async function joinSession(req, res) {
     }
 
     if (session.status !== "active") {
-      res.status(400).json({ message: "Cannot join a completed session" });
+      return res.status(400).json({ message: "Cannot join a completed session" });
     }
 
     if (session.host.toString() === userId.toString()) {
@@ -170,7 +170,7 @@ export async function endSession(req, res) {
     await channel.delete();
 
     session.status = "completed";
-    await save();
+    await session.save();
 
     res.status(200).json({ session, message: "Session ended successfully" });
   } catch (error) {
